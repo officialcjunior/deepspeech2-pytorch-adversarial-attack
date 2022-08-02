@@ -27,14 +27,14 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     cfg = TranscribeConfig
-    model = load_model(device="cpu", model_path=args.model_path, use_half=False)
+    model = load_model(device="cpu", model_path=args.model_path)
     decoder = load_decoder(labels=model.labels, cfg=cfg.lm)
 
     sound, sample_rate = torchaudio.load(args.input_wav)
     target_sentence = args.target_sentence.upper()
     if args.output_wav == "None":
         args.output_wav = None
-    attacker = Attacker(model=model, sound=sound, target=target_sentence, decoder=decoder, device=args.device, save=output_wav)
+    attacker = Attacker(model=model, sound=sound, target=target_sentence, decoder=decoder, device=args.device, save=args.output_wav)
 
     attacker.attack(epsilon = args.epsilon, alpha=args.alpha, attack_type=args.mode, PGD_round=args.PGD_iter)
 
